@@ -1,46 +1,103 @@
 import random
 
-def prisoners_dilemma_game(rounds):
-    # Initialize scores
-    john_score = 0
-    jane_score = 0
+# Define the bots' strategies
+def tit_for_tat(history):
+    return 'C' if not history or history[-1] == 'C' else 'D'
 
-    # Define possible choices
-    choices = ['C', 'D']
+def always_cooperate(history):
+    return 'C'
 
-    print(f"Playing {rounds} rounds of Prisoner's Dilemma!\n")
-    
-    for round_number in range(1, rounds + 1):
-        # Randomly choose actions for each player
-        john_choice = random.choice(choices)
-        jane_choice = random.choice(choices)
+def always_defect(history):
+    return 'D'
 
-        # Calculate scores based on the rules
-        if john_choice == 'C' and jane_choice == 'C':
-            john_score += 3
-            jane_score += 3
-        elif john_choice == 'C' and jane_choice == 'D':
-            jane_score += 5
-        elif john_choice == 'D' and jane_choice == 'C':
-            john_score += 5
-        elif john_choice == 'D' and jane_choice == 'D':
-            john_score += 1
-            jane_score += 1
+def random_choice(history):
+    return random.choice(['C', 'D'])
 
-        # Display round results
-        # print(f"Round {round_number}:")
-        # print(f"  John chose {john_choice}, Jane chose {jane_choice}")
-        # print(f"  Current Scores -> John: {john_score}, Jane: {jane_score}\n")
+def generous_tit_for_tat(history):
+    if not history or history[-1] == 'C':
+        return 'C'
+    return 'C' if random.random() < 0.1 else 'D'
 
-    # Determine the winner
-    print("Game Over!")
-    print(f"Final Scores -> John: {john_score}, Jane: {jane_score}")
-    if john_score > jane_score:
-        print("John wins!")
-    elif jane_score > john_score:
-        print("Jane wins!")
-    else:
-        print("It's a tie!")
+def grim_trigger(history):
+    return 'C' if 'D' not in history else 'D'
 
-rounds_to_play = int(input("Enter the number of rounds to play: "))
-prisoners_dilemma_game(rounds_to_play)
+def win_stay_lose_shift(history):
+    if not history or (len(history) > 1 and history[-2] == history[-1]):
+        return 'C'
+    return 'D'
+
+def tit_for_two_tats(history):
+    if len(history) < 2 or history[-2:] == ['C', 'C']:
+        return 'C'
+    return 'D'
+
+# Define bot configurations
+bots = {
+    "Tit-for-Tat": tit_for_tat,
+    "Always Cooperate": always_cooperate,
+    "Always Defect": always_defect,
+    "Random": random_choice,
+    "Generous Tit-for-Tat": generous_tit_for_tat,
+    "Grim Trigger": grim_trigger,
+    "Win-Stay, Lose-Shift": win_stay_lose_shift,
+    "Tit-for-Two-Tats": tit_for_two_tats
+}
+
+
+#------------------------------------------------------------------------------------
+
+
+# Define the scoring rules
+def calculate_scores(move1, move2):
+    if move1 == 'C' and move2 == 'C':
+        return (3, 3)
+    elif move1 == 'C' and move2 == 'D':
+        return (0, 5)
+    elif move1 == 'D' and move2 == 'C':
+        return (5, 0)
+    elif move1 == 'D' and move2 == 'D':
+        return (1, 1)
+
+# Simulate a match between two bots
+def simulate_match(bot1, bot2, rounds):
+    history1, history2 = [], []
+    score1, score2 = 0, 0
+
+    for _ in range(rounds):
+        move1 = bot1(history2)  # Bot1 decides based on Bot2's history
+        move2 = bot2(history1)  # Bot2 decides based on Bot1's history
+        
+        # Update scores
+        round_score1, round_score2 = calculate_scores(move1, move2)
+        score1 += round_score1
+        score2 += round_score2
+
+        # Update histories
+        history1.append(move2)
+        history2.append(move1)
+
+    return score1, score2
+
+# Run the round-robin tournament
+def axelrod_tournament(rounds_per_match):
+    results = {bot: 0 for bot in bots}
+
+    # Iterate through each pair of bots
+    for bot1_name, bot1_func in bots.items():
+        for bot2_name, bot2_func in bots.items():
+            if bot1_name != bot2_name:
+                # print(f"Match: {bot1_name} vs {bot2_name}")
+                score1, score2 = simulate_match(bot1_func, bot2_func, rounds_per_match)
+                # print(f"  {bot1_name} Score: {score1}, {bot2_name} Score: {score2}\n")
+                results[bot1_name] += score1
+                results[bot2_name] += score2
+
+    # Display tournament results
+    print("Tournament Results:")
+    for bot, score in results.items():
+        print(f"  {bot}: {score} points")
+    print("\nWinner:", max(results, key=results.get))
+
+# Run the tournament
+rounds_per_match = int(input("Enter the number of rounds per match: "))
+axelrod_tournament(rounds_per_match)
