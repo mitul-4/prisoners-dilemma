@@ -36,6 +36,28 @@ Might make this into a website game in the future 😅
 * If one cooperates while the other defects, the defector gets 5 points & the cooperator gets 0 points.
 * If both bots defect, they each get 1 point.
 
+## Example Output
+
+Input:
+```sql
+Enter the number of rounds per match: 100
+```
+
+Output:
+```yaml
+Tournament Results:
+  Tit-for-Tat: 1203 points
+  Always Cooperate: 900 points
+  Always Defect: 1301 points
+  Grim Trigger: 1050 points
+  Random: 950 points
+  Generous Tit-for-Tat: 1100 points
+  Win-Stay, Lose-Shift: 1150 points
+  Tit-for-Two-Tats: 1170 points
+
+Winner: Always Defect
+```
+
 ## Bots and Their Strategies
 Here’s a breakdown of the characteristics of the bots included:
 
@@ -78,25 +100,3 @@ Here’s a breakdown of the characteristics of the bots included:
 * Behavior: Cooperates unless the opponent defects twice in a row.
 * Strengths: More forgiving than Tit-for-Tat, making it robust in noisy environments.
 * Weaknesses: Vulnerable to extended exploitation by defectors.
-
-## Example Output
-
-Input:
-```sql
-Enter the number of rounds per match: 100
-```
-
-Output:
-```yaml
-Tournament Results:
-  Tit-for-Tat: 1203 points
-  Always Cooperate: 900 points
-  Always Defect: 1301 points
-  Grim Trigger: 1050 points
-  Random: 950 points
-  Generous Tit-for-Tat: 1100 points
-  Win-Stay, Lose-Shift: 1150 points
-  Tit-for-Two-Tats: 1170 points
-
-Winner: Always Defect
-```
