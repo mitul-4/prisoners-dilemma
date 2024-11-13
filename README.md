@@ -1,4 +1,4 @@
-# Axelrod's Tournament Simulation
+# Prisoner's Dilemma Simulation
 
 This is a Python implementation of an Axelrod-style tournament, where bots compete in a simulation of Prisoner's Dilemma! Each bot follows a predefined strategy to decide whether to cooperate (C) or defect (D) in each round, earning points based on the outcome of the interaction.
 
