@@ -10,7 +10,7 @@ Might make this into a website game in the future 😅
 ## How to Play
 
 1. **Install Python**  
-   Ensure Python 3.x is installed on your system.
+   Ensure Python 3.x is installed on your computer.
 
 2. **Run the Program**  
    Save the game code in a file named `game.py`, and run it using the following command in your terminal:
